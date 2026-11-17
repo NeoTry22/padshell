@@ -1,0 +1,32 @@
+name: PadShell
+options:
+  bundleIdPrefix: com.gemhelper
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    TARGETED_DEVICE_FAMILY: "2"          # 仅 iPad
+    CODE_SIGN_STYLE: Manual
+targets:
+  PadShell:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"             # SCContentSharingPicker 需要 iPadOS 26+
+    sources:
+      - path: Sources/App
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gemhelper.padshell
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: ""
+    info:
+      path: Sources/App/Info.plist
+      properties:
+        CFBundleDisplayName: PadShell
+        UILaunchScreen: {}
+        ITSAppUsesNonExemptEncryption: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    scheme: {}
