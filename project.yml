@@ -11,7 +11,7 @@ targets:
   PadShell:
     type: application
     platform: iOS
-    deploymentTarget: "26.0"             # SCContentSharingPicker 需要 iPadOS 26+
+    deploymentTarget: "27.0"             # ScreenCaptureKit iOS 平台要求 27.0+
     sources:
       - path: Sources/App
     settings:
@@ -22,6 +22,9 @@ targets:
       path: Sources/App/Info.plist
       properties:
         CFBundleDisplayName: PadShell
+        NSScreenCaptureUsageDescription: PadShell 需要捕获屏幕画面以联动 ESP32 控制器
+        UIBackgroundModes:
+          - screen-capture
         UILaunchScreen: {}
         ITSAppUsesNonExemptEncryption: false
         UISupportedInterfaceOrientations:
