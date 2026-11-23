@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.zwork/
+.DS_Store
+build/
+dist/
+PadShell.xcodeproj/
+*.ipa

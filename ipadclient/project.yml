@@ -1,0 +1,55 @@
+name: PadShell
+options:
+  bundleIdPrefix: com.padshell
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "2"          # 仅 iPad
+    CODE_SIGN_STYLE: Manual
+targets:
+  PadShell:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"             # iPadOS 17.7.x 实机目标
+    sources:
+      - path: Sources/App
+    dependencies:
+      - target: PadBroadcast
+        embed: true                      # 扩展打进 PlugIns/
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.padshell.padshell
+    info:
+      path: Sources/App/Info.plist
+      properties:
+        CFBundleDisplayName: PadShell
+        NSScreenCaptureUsageDescription: PadShell 需要屏幕广播权限，把 iPad 画面以 1-2fps 上传到 ESP32 图床
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        UILaunchScreen: {}
+        ITSAppUsesNonExemptEncryption: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+  PadBroadcast:
+    type: app-extension                  # 广播上传扩展：NSExtensionPointIdentifier 区分
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Sources/Broadcast
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.padshell.padshell.broadcast
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"
+    info:
+      path: Sources/Broadcast/Info.plist
+      properties:
+        CFBundleDisplayName: PadShell Broadcast
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.broadcast-services-upload
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).SampleHandler

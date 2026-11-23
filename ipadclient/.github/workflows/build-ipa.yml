@@ -1,0 +1,42 @@
+name: Build unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: macos-latest      # 自带 Xcode 16.x（iOS 18 SDK，deploymentTarget 17.0 可编译）
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Show toolchain
+        run: xcodebuild -version && xcodegen --version
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Archive (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild -project PadShell.xcodeproj -scheme PadShell \
+            -configuration Release -destination "generic/platform=iOS" \
+            -archivePath build/PadShell.xcarchive archive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY=""
+
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/PadShell.xcarchive/Products/Applications/PadShell.app Payload/
+          zip -qry PadShell-unsigned.ipa Payload
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PadShell-unsigned-ipa
+          path: PadShell-unsigned.ipa
